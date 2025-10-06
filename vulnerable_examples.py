@@ -139,3 +139,33 @@ def update_profile_vulnerable(request):
 # ----------------------------------------
 # Кінець файлу
 # ----------------------------------------
+
+def get_user_data(username):
+  """
+  Знаходить дані користувача в базі даних за його іменем.
+  !!! Ця функція вразлива до SQL-ін'єкції !!!
+  """
+  db = sqlite3.connect("users.db")
+  cursor = db.cursor()
+  
+  # Вразливість знаходиться тут:
+  # Ім'я користувача (username) напряму вставляється в SQL-запит.
+  query = "SELECT * FROM users WHERE username = '" + username + "'"
+  
+  cursor.execute(query)
+  user_data = cursor.fetchall()
+  db.close()
+  
+  return user_data
+
+# Приклад небезпечного виклику:
+# Зловмисник може передати такий рядок замість імені:
+# ' OR 1=1 --
+#
+# В результаті кінцевий запит буде виглядати так:
+# SELECT * FROM users WHERE username = '' OR 1=1 --'
+#
+# Цей запит поверне ВСІХ користувачів з таблиці, оскільки "1=1" завжди істинне.
+malicious_input = "' OR 1=1 --"
+get_user_data(malicious_input)
+
