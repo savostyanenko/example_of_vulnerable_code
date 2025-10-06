@@ -169,3 +169,19 @@ def get_user_data(username):
 malicious_input = "' OR 1=1 --"
 get_user_data(malicious_input)
 
+#----------------------------------------------------
+def calculate_expression(expression):
+    """
+    Обчислює математичний вираз, переданий як рядок.
+    ⚠️ Небезпечно: використовує eval(), тому може виконати довільний код.
+    """
+    try:
+        result = eval(expression)
+        print(f"Результат: {result}")
+        return result
+    except Exception as e:
+        print(f"Помилка: {e}")
+        return None
+
+# Приклад використання:
+calculate_expression("2 + 3 * 4")
